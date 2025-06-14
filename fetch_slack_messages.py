@@ -44,6 +44,41 @@ def fetch_messages(client: WebClient, channel_id: str, max_retries: int = 3):
     return messages
 
 
+def get_user_name(client: WebClient, user_id: str, cache: dict, max_retries: int = 3) -> str:
+    """Resolve a user ID to a user name with simple caching and retries."""
+    if not user_id:
+        return ""
+    if user_id in cache:
+        return cache[user_id]
+
+    retries = 0
+    while retries < max_retries:
+        try:
+            response = client.users_info(user=user_id)
+            profile = response.get("user", {})
+            name = (
+                profile.get("profile", {}).get("display_name")
+                or profile.get("real_name")
+                or profile.get("name")
+                or user_id
+            )
+            cache[user_id] = name
+            return name
+        except SlackApiError as e:
+            if e.response.status_code == 429:
+                retry_after = int(e.response.headers.get("Retry-After", 1))
+                time.sleep(retry_after)
+                retries += 1
+            else:
+                break
+        except Exception:
+            retries += 1
+            time.sleep(1)
+
+    cache[user_id] = user_id
+    return user_id
+
+
 def main():
     parser = argparse.ArgumentParser(description="Fetch Slack channel messages to CSV")
     parser.add_argument(
@@ -69,14 +104,16 @@ def main():
         fieldnames = ["channel", "ts", "user", "text"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
+        user_cache = {}
         for channel_id in args.channels:
             try:
                 for msg in fetch_messages(client, channel_id):
+                    user_name = get_user_name(client, msg.get("user"), user_cache)
                     writer.writerow(
                         {
                             "channel": channel_id,
                             "ts": msg.get("ts"),
-                            "user": msg.get("user"),
+                            "user": user_name,
                             "text": msg.get("text", "").replace("\n", " "),
                         }
                     )
