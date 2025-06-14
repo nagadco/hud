@@ -1,1 +1,23 @@
 reade.me
+
+## Fetch Slack Messages
+
+This repository includes a script `fetch_slack_messages.py` for exporting
+messages from Slack channels to a CSV file.
+
+### Setup
+1. Install Python 3.
+2. Install dependencies:
+   ```bash
+   pip install slack_sdk
+   ```
+3. Set the environment variable `SLACK_TOKEN` with a valid Slack API token.
+
+### Usage
+Run the script by specifying channel IDs and the output path:
+```bash
+python fetch_slack_messages.py --channels C12345678 C23456789 --output messages.csv
+```
+Multiple channel IDs can be provided after `--channels`.
+
+The script writes messages from the specified channels into the CSV file.
