@@ -22,3 +22,26 @@ Multiple channel IDs can be provided after `--channels`.
 
 The script writes messages from the specified channels into the CSV file.
 Each message includes the user's display name instead of their ID.
+
+## Territory Status Summary
+
+The `territory_status_summary.py` script generates an Excel report summarizing territory statuses for each district.
+
+### Setup
+1. Install Python 3.
+2. Install dependencies:
+   ```bash
+   pip install pandas openpyxl requests
+   ```
+
+### Usage
+Provide either a URL to fetch data from or a local file path containing the data:
+```bash
+python territory_status_summary.py --url https://example.com/data.json --output-dir reports
+```
+Or using a local file:
+```bash
+python territory_status_summary.py --file data.json --output-dir reports
+```
+
+The script writes an Excel file named `territory_status_summary_<timestamp>.xlsx` to the specified output directory.
