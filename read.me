@@ -45,3 +45,21 @@ python territory_status_summary.py --file data.json --output-dir reports
 ```
 
 The script writes an Excel file named `territory_status_summary_<timestamp>.xlsx` to the specified output directory.
+
+## Google Sheets District Tracker
+
+The `districts_summary.gs` script is a Google Apps Script that builds an
+up-to-date dashboard summarizing area progress for each district.
+
+### Overview
+- **Areas sheet**: A sheet named `Areas` with columns `District`, `Area_ID` and
+  `Status`.
+- **Summary sheet**: A sheet named `Districts_Summary` is created/updated
+  automatically with totals, completion percentages and an emoji based status.
+- **External totals**: Optionally provide a `District_Totals` sheet listing the
+  total area count per district. Set `USE_EXTERNAL_TOTALS` in the script to use
+  those numbers instead of counting rows.
+
+Whenever you edit the `Areas` sheet, the summary is refreshed automatically via
+an `onEdit` trigger. Run `updateDistrictsSummary()` manually if you need to
+rebuild the table.
