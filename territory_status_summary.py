@@ -1,8 +1,9 @@
 import argparse
 import json
 import os
+import random
 from datetime import datetime
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 import pandas as pd
 import requests
@@ -18,10 +19,18 @@ STATUS_KEYS = {
     "planned": "planned",
 }
 
+# A small pool of user agent strings to randomize requests
+USER_AGENTS: List[str] = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0 Safari/537.36",
+]
 
-def fetch_from_url(url: str) -> str:
+
+def fetch_from_url(url: str, user_agents: Optional[List[str]] = None) -> str:
     """Fetch data from a URL, raising an error if the request fails."""
-    response = requests.get(url, timeout=30)
+    headers = {"User-Agent": random.choice(user_agents or USER_AGENTS)}
+    response = requests.get(url, timeout=30, headers=headers)
     response.raise_for_status()
     return response.text
 
@@ -55,9 +64,9 @@ def parse_raw_text(text: str) -> Dict[str, Any]:
     return {"districts": districts}
 
 
-def load_data(source: str, from_url: bool) -> Dict[str, Any]:
+def load_data(source: str, from_url: bool, user_agents: Optional[List[str]] = None) -> Dict[str, Any]:
     """Load data from a URL or file and parse JSON or raw text."""
-    raw = fetch_from_url(source) if from_url else read_from_file(source)
+    raw = fetch_from_url(source, user_agents) if from_url else read_from_file(source)
     try:
         return json.loads(raw)
     except json.JSONDecodeError:
@@ -128,7 +137,7 @@ def main():
     args = parser.parse_args()
 
     try:
-        data = load_data(args.url or args.file, from_url=bool(args.url))
+        data = load_data(args.url or args.file, from_url=bool(args.url), user_agents=USER_AGENTS)
     except Exception as exc:
         raise SystemExit(f"Failed to load data: {exc}")
 
