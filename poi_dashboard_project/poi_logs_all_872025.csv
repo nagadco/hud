@@ -1,0 +1,4 @@
+id,created_by,created_at,quality_score
+1,alice,2024-01-01 10:00:00,0.95
+2,bob,2024-01-01 11:00:00,0.90
+3,alice,2024-01-01 12:30:00,0.85
