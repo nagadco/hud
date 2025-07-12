@@ -45,3 +45,30 @@ python territory_status_summary.py --file data.json --output-dir reports
 ```
 
 The script writes an Excel file named `territory_status_summary_<timestamp>.xlsx` to the specified output directory.
+
+## POI Field Operations Pipeline
+
+The `poi_pipeline.py` script fetches POI records from the Hudhud API, validates
+required fields, assigns each POI to a territory, calculates a quality score,
+and uploads the results to a Google Sheet.
+
+### Setup
+1. Install Python 3.
+2. Install dependencies:
+   ```bash
+   pip install pandas geopandas shapely requests google-api-python-client
+   ```
+3. Set the following environment variables:
+   - `HUDHUD_ENDPOINT` – Hudhud API endpoint URL
+   - `HUDHUD_TOKEN` – API authentication token
+   - `TERRITORIES_GEOJSON` – Path to a GeoJSON file with territory polygons
+   - `GOOGLE_CREDS` – Path to a Google service account JSON key
+   - `GOOGLE_SHEET_ID` – ID of the Google Sheet to write results to
+
+### Usage
+Run the pipeline:
+```bash
+python poi_pipeline.py
+```
+
+The script uploads processed POI records to the specified Google Sheet.
