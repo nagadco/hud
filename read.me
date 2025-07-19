@@ -45,3 +45,23 @@ python territory_status_summary.py --file data.json --output-dir reports
 ```
 
 The script writes an Excel file named `territory_status_summary_<timestamp>.xlsx` to the specified output directory.
+
+## HudHud POI Dashboard
+
+This repository now includes a Dash application for exploring Points of Interest data.
+
+### Setup
+1. Install Python 3.
+2. Install dependencies:
+   ```bash
+   pip install dash dash-bootstrap-components dash-leaflet pandas numpy geopy rapidfuzz plotly
+   ```
+3. Place your POI CSV file at `poi_logs_with_territories.csv` or set the environment variable `POI_CSV` to its path.
+
+### Usage
+Run the app with:
+```bash
+python dash_app.py
+```
+The server starts on port `8050`.
+

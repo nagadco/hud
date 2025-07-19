@@ -1,0 +1,11 @@
+.sidebar {
+    background-color: #193F41;
+    padding: 1rem;
+    color: #FFFFFF;
+}
+.sidebar-title {
+    color: #33CC6A;
+}
+.content {
+    padding: 1rem;
+}
